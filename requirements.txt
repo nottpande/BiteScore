@@ -1,0 +1,16 @@
+dvc
+dvc-s3
+dagshub
+mlflow
+scikit-learn
+torch
+ipykernel
+seaborn
+Flask
+Flask-Cors
+ensure
+joblib
+tqdm
+python-box
+pyYAML
+notebook

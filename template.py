@@ -8,7 +8,7 @@ import logging
 
 logging.basicConfig(level=logging.INFO, format='[%(asctime)s]: %(message)s:')
 
-project_name="rating-predictor"
+project_name="BiteScore"
 list_of_files = [
     ".github/workflows/.gitkeep",  # Placeholder file to keep the workflows folder in the repository for CI/CD pipeline setup using GitHub Actions.
     f"src/{project_name}/__init__.py",  # Makes the 'src/{project_name}' directory a package.
