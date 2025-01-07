@@ -14,3 +14,9 @@ tqdm
 python-box
 pyYAML
 notebook
+pymongo
+certifi
+python-dotenv
+
+
+## -e . # refers to the setup.py file.

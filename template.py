@@ -11,16 +11,21 @@ logging.basicConfig(level=logging.INFO, format='[%(asctime)s]: %(message)s:')
 project_name="BiteScore"
 list_of_files = [
     ".github/workflows/.gitkeep",  # Placeholder file to keep the workflows folder in the repository for CI/CD pipeline setup using GitHub Actions.
-    f"src/{project_name}/__init__.py",  # Makes the 'src/{project_name}' directory a package.
-    f"src/{project_name}/components/__init__.py",  # Initializes the 'components' module, which will hold reusable components for building pipelines.
-    f"src/{project_name}/utils/__init__.py",  # Initializes the 'utils' module for generic utility functions used across the project.
-    f"src/{project_name}/utils/functionalities.py",  # Contains common utility functions used in the project.
-    f"src/{project_name}/config/__init__.py",  # Initializes the 'config' module.
-    f"src/{project_name}/config/configuration.py",  # Manages configuration loading and validation.
-    f"src/{project_name}/pipeline/__init__.py",  # Initializes the 'pipeline' module, which will include different data pipelines.
-    f"src/{project_name}/entity/__init__.py",  # Initializes the 'entity' module, which defines the project's core entities (e.g., data classes).
-    f"src/{project_name}/entity/config_entity.py",  # Defines configuration-related entities as data classes.
-    f"src/{project_name}/constants/__init__.py",  # Initializes the 'constants' module for storing project-wide constants.
+    f"{project_name}/__init__.py",  # Makes the '{project_name}' directory a package.
+    f"{project_name}/components/__init__.py",  # Initializes the 'components' module, which will hold reusable components for building pipelines.
+    f"{project_name}/utils/__init__.py",  # Initializes the 'utils' module for generic utility functions used across the project.
+    f"{project_name}/utils/functionalities.py",  # Contains common utility functions used in the project.
+    f"{project_name}/config/__init__.py",  # Initializes the 'config' module.
+    f"{project_name}/config/configuration.py",  # Manages configuration loading and validation.
+    f"{project_name}/pipeline/__init__.py",  # Initializes the 'pipeline' module, which will include different data pipelines.
+    f"{project_name}/entity/__init__.py",  # Initializes the 'entity' module, which defines the project's core entities (e.g., data classes).
+    f"{project_name}/entity/config_entity.py",  # Defines configuration-related entities as data classes.
+    f"{project_name}/constants/__init__.py",  # Initializes the 'constants' module for storing project-wide constants.
+    f"{project_name}/Logging/__init__.py"  # Creating a folder to perform logging.
+    f"{project_name}/Logging/logger.py" # File created for custom logging
+    f"{project_name}/Exception/__init__.py" # Creating a folder to handle the exceptions.
+    f"{project_name}/Exception/exception.py" # Creating a file for custom exception and its logging.
+    f"{project_name}/Cloud/__init__.py" # Creating a folder to handle some details about cloud.
     "config/config.yaml",  # Stores project configuration details (e.g., paths, model parameters).
     "params.yaml",  # Stores hyperparameters and other project settings (e.g., input/output paths).
     "schema.yaml",  # Defines the schema for the dataset (e.g., column names, data types).
