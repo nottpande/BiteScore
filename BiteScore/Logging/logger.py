@@ -14,8 +14,8 @@ logging.basicConfig(
     level=logging.INFO,
     format=logging_format,
     handlers=[
-        logging.FileHandler(log_filepath),
-        logging.StreamHandler(sys.stdout) #put message in the terminal/stream
+        logging.FileHandler(log_filepath), # putting log message in the logs file.
+        logging.StreamHandler(sys.stdout) # putting log message in the terminal/stream
     ]
 )
 

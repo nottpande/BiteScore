@@ -1,0 +1,5 @@
+outs:
+- md5: 191fa5e3ffa596aa4e99ec743e716f0a
+  size: 432
+  hash: md5
+  path: restaurant_type_mapping.json

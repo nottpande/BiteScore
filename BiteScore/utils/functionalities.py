@@ -6,7 +6,7 @@ import os
 import yaml
 import json
 import joblib
-from src.BiteScore import logger
+from BiteScore.Logging.logger import logger
 from ensure import ensure_annotations
 from box import ConfigBox
 from pathlib import Path

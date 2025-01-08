@@ -1,0 +1,5 @@
+outs:
+- md5: 81971ab08d0009860bb1409d52a22c9b
+  size: 1963
+  hash: md5
+  path: location_mapping.json

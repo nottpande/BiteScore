@@ -1,0 +1,5 @@
+outs:
+- md5: 6c2fdec471804ac35f5f83ecc1a84001
+  size: 574072999
+  hash: md5
+  path: zomato.csv

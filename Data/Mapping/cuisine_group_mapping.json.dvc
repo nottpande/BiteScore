@@ -1,0 +1,5 @@
+outs:
+- md5: 9b2db8e74d4237a97cf9f94650f24f65
+  size: 1631
+  hash: md5
+  path: cuisine_group_mapping.json
