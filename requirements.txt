@@ -15,6 +15,7 @@ python-box
 pyYAML
 notebook
 pymongo
+pymongo[srv]==3.12
 certifi
 python-dotenv
 
