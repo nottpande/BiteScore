@@ -1,12 +1,20 @@
 file_locations : 
-  input : Data/Raw/zomato.csv
+  Raw:
+    input : Data/Raw/zomato.csv
+    output : Data/Processed/zomato.csv
+
   mapping:
     restaurant_type : Data/Mapping/restaurant_type_mapping.json
     cuisine : Data/Mapping/cuisine_group_mapping.json
     location : Data/Mapping/location_mapping.json
-  output : Data/Processed/zomato.csv
+
+  Formatted:
+    Train : Data/Formatted/train.csv
+    Test : Data/Formatted/test.csv
+    Validation : Data/Formatted/val.csv
 
 Database_Details:
   Database_Name : BiteScore
-  Cluster_Information : Raw_Data
-  
+  Train_Collection : Train
+  Test_Collection : Test
+  Validation_Collection : Validation
