@@ -1,3 +1,8 @@
+PIPELINE_NAME: BiteScore
+ARTIFACTS_DIR : Artifacts
+TARGET_COLUMN : Rating
+SCHEMA_PATH : schema.yaml
+
 file_locations : 
   Raw:
     input : Data/Raw/zomato.csv

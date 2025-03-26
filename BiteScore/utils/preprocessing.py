@@ -94,4 +94,33 @@ def encode_location(location:str) -> int:
         return location_mapping[location]
     else:
         logger.info(f"Encoded Location")
-        return len(location_mapping) + 1 
+        return len(location_mapping) + 1
+
+@ensure_annotations
+def score_reviews(reviews: list, sentiment_scoring_model) -> float:
+    if not reviews:  # Avoid division by zero
+        logger.warning("No reviews to score.")
+        return 0.0
+    
+    scores = []
+    for tuple in reviews:
+        rating = tuple[0]
+        review = tuple[1]
+        result = sentiment_scoring_model(review)
+        result = result[0]  # Getting the dictionary of the result
+
+        label = result['label']
+        confidence = result['score']
+
+        if label == 'POSITIVE':
+            score = (rating / 5) * 1 * (0.1 * confidence)  # 10% confidence weight
+        elif label == 'NEGATIVE':
+            score = (rating / 5) * -1 * (0.1 * confidence)  # 10% confidence weight
+        else:
+            score = 0  # If an unexpected label is encountered
+        
+        scores.append(score)
+
+    final_score = sum(scores) / len(scores) if scores else 0
+    logger.info(f"Scored the reviews")
+    return final_score

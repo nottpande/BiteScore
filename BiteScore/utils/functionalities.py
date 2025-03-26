@@ -6,6 +6,7 @@ import os
 import yaml
 import json
 import joblib
+import numpy as np
 from BiteScore.Logging.logger import logger
 from ensure import ensure_annotations
 from box import ConfigBox
@@ -106,3 +107,23 @@ def load_model(path: Path) -> Any:
     logger.info(f"Model loaded from: {path}")
     return data
 
+@ensure_annotations
+def write_yaml_file(file_path: str, content: object, replace: bool = False) -> None:
+    if replace:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
+    with open(file_path, "w") as file:
+        yaml.dump(content, file)
+
+@ensure_annotations
+def save_numpy_array_data(file_path: str, array: np.array):
+    """
+    Save numpy array data to file
+    file_path: str location of file to save
+    array: np.array data to save
+    """
+    dir_path = os.path.dirname(file_path)
+    os.makedirs(dir_path, exist_ok=True)
+    with open(file_path, "wb") as file_obj:
+        np.save(file_obj, array)

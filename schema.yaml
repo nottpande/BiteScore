@@ -1,0 +1,12 @@
+columns:
+  address: string
+  name: string
+  online_order: string
+  book_table: string
+  votes: int32
+  location: string
+  rest_type: string
+  cuisines: string
+  Rating: double
+  reviews: string
+  Price Per Head: double
