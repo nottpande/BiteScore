@@ -127,3 +127,13 @@ def save_numpy_array_data(file_path: str, array: np.array):
     os.makedirs(dir_path, exist_ok=True)
     with open(file_path, "wb") as file_obj:
         np.save(file_obj, array)
+
+@ensure_annotations
+def load_numpy_array_data(file_path: str) -> np.array:
+    """
+    load numpy array data from file
+    file_path: str location of file to load
+    return: np.array data loaded
+    """
+    with open(file_path, "rb") as file_obj:
+        return np.load(file_obj)

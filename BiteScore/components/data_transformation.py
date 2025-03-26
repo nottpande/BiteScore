@@ -55,14 +55,17 @@ class DataTransformation:
             val_data = self.read_data(self.data_validation_artifact.val_data_path)
 
             # Training Dataframe
+            train_data.drop(subset=['name','address'], axis=0, inplace=True)
             input_feature_train_df = train_data.drop(columns=[CONFIG.TARGET_COLUMN], axis=1)
             target_feature_train_df = train_data[CONFIG.TARGET_COLUMN]
 
             # Testing Dataframe
+            test_data.dropna(subset=['name','address'], axis=0, inplace=True)
             input_feature_test_df = test_data.drop(columns=[CONFIG.TARGET_COLUMN], axis=1)
             target_feature_test_df = test_data[CONFIG.TARGET_COLUMN]
 
             # Validation Dataframe
+            val_data.dropna(subset=['name','address'], axis=0, inplace=True)
             input_feature_val_df = val_data.drop(columns=[CONFIG.TARGET_COLUMN], axis=1)
             target_feature_val_df = val_data[CONFIG.TARGET_COLUMN]
 
