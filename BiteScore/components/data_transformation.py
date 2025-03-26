@@ -88,8 +88,8 @@ class DataTransformation:
             save_numpy_array_data(self.data_transformation_config.transformed_val_file_path, array=val_arr)
 
             # Save the transformer model
-            save_model(self.data_transformation_config.transformed_object_file_path, transformer)
-            save_model("final_model/preprocessor.pkl", transformer)
+            save_model(path=self.data_transformation_config.transformed_object_file_path, data=transformer)
+            save_model(path="final_model/preprocessor.pkl", data=transformer)
 
             logger.info("Data transformation completed successfully")
 
