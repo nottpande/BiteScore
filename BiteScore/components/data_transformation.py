@@ -12,7 +12,7 @@ from BiteScore.config.artifact_config import DataValidationArtifact, DataTransfo
 from BiteScore.utils.functionalities import read_yaml, save_numpy_array_data, save_model
 
 # Reading the config file
-CONFIG = read_yaml(Path("../config.yaml"))
+CONFIG = read_yaml(Path("config.yaml"))
 
 class DataTransformation:
     def __init__(self, data_transformation_config: DataTransformation, data_validation_artifact: DataValidationArtifact):

@@ -108,13 +108,18 @@ def load_model(path: Path) -> Any:
     return data
 
 @ensure_annotations
-def write_yaml_file(file_path: str, content: object, replace: bool = False) -> None:
+def write_yaml_file(file_path: str, content: dict, replace: bool = False):
+    logger.info(f"Writing to yaml file: {file_path}")
+    if not isinstance(content, dict):
+        raise ValueError("Content must be a dictionary.")
     if replace:
         if os.path.exists(file_path):
             os.remove(file_path)
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
     with open(file_path, "w") as file:
-        yaml.dump(content, file)
+        logger.info("Writing content to yaml file")
+        yaml.dump(content, file, default_flow_style=False)
+        logger.info(f"Content writing completed")
 
 @ensure_annotations
 def save_numpy_array_data(file_path: str, array: np.array):

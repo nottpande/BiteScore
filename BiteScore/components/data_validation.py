@@ -15,14 +15,15 @@ class DataValidation:
             logger.info("Initializing the data validation configuration")
             self.data_validation_config=data_validation_config
             self.data_ingestion_artifact=data_ingestion_artifact
-            self._schema = read_yaml(Path("../schema.yaml"))
+            self._schema = read_yaml(Path("schema.yaml"))
         except Exception as e:
             logger.error("Error in initializing the data validation configuration")
             raise BiteScoreException(e, sys)
 
-    def read_data(data) -> pd.DataFrame:
+    @staticmethod
+    def read_data(path) -> pd.DataFrame:
         try:
-            return pd.read_csv(data)
+            return pd.read_csv(path)
         except Exception as e:
             logger.error("Error in reading the data")
             raise BiteScoreException(e, sys)
@@ -66,18 +67,16 @@ class DataValidation:
                 report[column] = {
                     "train_vs_test": {
                         "p_value": float(test_stat.pvalue),
-                        "drift_status": test_drift
+                        "drift_status": bool(test_drift)
                     },
                     "train_vs_val": {
                         "p_value": float(val_stat.pvalue),
-                        "drift_status": val_drift
+                        "drift_status": bool(val_drift)
                     }
                 }
-
-            # Writing the report in our YAML file.
-            os.makedirs(os.path.dirname(self.data_validation_config.drift_report_file_path),exist_ok=True)
-            write_yaml_file(self.data_validation_config.drift_report_file_path, report)
-
+            write_yaml_file(file_path=str(self.data_validation_config.drift_report_file_path), content=report)
+            logger.info(f"Yaml file saved at: {self.data_validation_config.drift_report_file_path}, leaving detect_drift function")
+            return status
         except Exception as e:
             logger.error("Error in detecting drift")
             raise BiteScoreException(e, sys)
@@ -101,7 +100,8 @@ class DataValidation:
             
             # Checking the drift between the datasets
             logger.info("Detecting drift between the datasets")
-            self.detect_drift(train_df, test_df, val_df)
+            status = self.detect_drift(train_df, test_df, val_df)
+            logger.info(f"Drift status: {status}")
 
             # Saving the valid data
             valid_data_dir = self.data_validation_config.valid_data_dir

@@ -4,7 +4,7 @@ from pathlib import Path
 from BiteScore.utils.functionalities import read_yaml
 
 # Loading the configuration file
-CONFIG = read_yaml(Path("../config.yaml"))
+CONFIG = read_yaml(Path("config.yaml"))
 
 
 class TrainingPipeline:
@@ -38,7 +38,7 @@ class DataIngestion:
 
 class DataValidation:
     def __init__ (self, training_pipeline_config:TrainingPipeline):
-        self.data_ingestion_dir:str=os.path.join(
+        self.data_validation_dir:str=os.path.join(
             training_pipeline_config.artifact_dir,"DataValidation"
         )
         self.valid_data_dir: str = os.path.join(self.data_validation_dir, "Valid")
@@ -49,11 +49,8 @@ class DataValidation:
         self.invalid_train_file_path: str = os.path.join(self.invalid_data_dir, "train.csv")
         self.invalid_test_file_path: str = os.path.join(self.invalid_data_dir, "test.csv")
         self.invalid_val_file_path: str = os.path.join(self.invalid_data_dir, "val.csv")
-        self.drift_report_file_path: str = os.path.join(
-            self.data_validation_dir,
-            "Report",
-            "report.yaml",
-        )
+        self.drift_report_file_dir: str = os.path.join(self.data_validation_dir,"Report")
+        self.drift_report_file_path: str = os.path.join(self.drift_report_file_dir,"report.yaml")
 
 class DataTransformation:
     def __init__ (self,training_pipeline_config:TrainingPipeline):
