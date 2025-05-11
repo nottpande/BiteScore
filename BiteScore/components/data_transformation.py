@@ -72,17 +72,6 @@ class DataTransformation:
             # Build the transformer object
             transformer = self.build_transformer_object(train_data)
 
-            # For testing purposes
-            # Take only the first 10 rows for testing
-            input_feature_train_df = input_feature_train_df.head(10)
-            target_feature_train_df = target_feature_train_df.head(10)
-
-            input_feature_test_df = input_feature_test_df.head(10)
-            target_feature_test_df = target_feature_test_df.head(10)
-
-            input_feature_val_df = input_feature_val_df.head(10)
-            target_feature_val_df = target_feature_val_df.head(10)
-
             # Transform the data
             logger.info("Transforming the data")
             transformer.fit(input_feature_train_df)

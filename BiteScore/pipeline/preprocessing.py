@@ -1,5 +1,6 @@
 import sys
 import ast
+import pandas as pd
 from transformers import pipeline
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
@@ -65,13 +66,25 @@ class MultiLabelBinarizerTransformer(BaseEstimator, TransformerMixin):
         self.binarizer = binarizer
 
     def fit(self, X, y=None):
+        # Fit the MultiLabelBinarizer on the column in the data
         self.binarizer.fit(X[self.column_name])
         return self
 
     def transform(self, X):
         X_copy = X.copy()
-        X_copy[self.column_name] = list(self.binarizer.transform(X_copy[self.column_name]))
+        
+        # Perform the transformation
+        transformed = self.binarizer.transform(X_copy[self.column_name])
+        
+        # Convert the list of binary values into DataFrame columns (one for each class)
+        binarized_df = pd.DataFrame(transformed, columns=self.binarizer.classes_)
+        
+        # Drop the original column and merge the new binarized columns
+        X_copy = X_copy.drop(columns=[self.column_name])
+        X_copy = pd.concat([X_copy, binarized_df], axis=1)
+        
         return X_copy
+
 
 # Custom Transformer for Review Scoring
 class ReviewScoringTransformer(BaseEstimator, TransformerMixin):
@@ -84,6 +97,8 @@ class ReviewScoringTransformer(BaseEstimator, TransformerMixin):
     def transform(self, X):
         X_copy = X.copy()
         X_copy['reviews_score'] = X_copy['reviews'].apply(lambda x: score_reviews(ast.literal_eval(x), self.sentiment_scoring_model))
+        # Drop the 'reviews' column after scoring
+        X_copy.drop(columns=['reviews'], inplace=True)
         return X_copy
 
 # Main Preprocessing Pipeline Class

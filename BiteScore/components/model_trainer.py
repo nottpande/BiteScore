@@ -1,8 +1,9 @@
 import os
 import sys
+import dagshub
 import mlflow
 from dotenv import load_dotenv
-from urllib.parse import urlparse
+from pathlib import Path
 
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.linear_model import LinearRegression
@@ -17,6 +18,11 @@ from BiteScore.utils.Evaluations import Evaluations
 from BiteScore.utils.functionalities import save_model, load_model, load_numpy_array_data
 load_dotenv()
 
+class BiteScoreModel:
+    def __init__(self, preprocessor, model):
+        self.preprocessor = preprocessor
+        self.model = model
+
 class ModelTrainer:
     def __init__ (self, model_trainer_config: ModelTrainer, data_transformation_Artifact: DataTransformationArtifact):
         try:
@@ -28,12 +34,10 @@ class ModelTrainer:
             raise BiteScoreException(e, sys)
     
     def track(self, best_model, metrics):
-        mlflow.set_registry_uri(os.getenv("MLFLOW_TRACKING_URI"))
-        tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
+        dagshub.init(repo_owner='nottpande', repo_name='BiteScore', mlflow=True)
 
         with mlflow.start_run():
             # tracking the metric
-            mlflow.log_metric("Accuracy", metrics.accuracy)
             mlflow.log_metric("R2 Score", metrics.r2_score)
             mlflow.log_metric("Loss", metrics.loss)
 
@@ -51,15 +55,15 @@ class ModelTrainer:
                 "Decision Tree Regressor": DecisionTreeRegressor(),
                 "Linear Regression": LinearRegression(),
                 "Polynomial Regression": Pipeline([
-                    ("Polynomial Features", PolynomialFeatures(degree=2)),  # Default degree=2
+                    ("Polynomial Features", PolynomialFeatures(degree=2)),
                     ("Linear Regression", LinearRegression())
                 ]),
-                "Neural Network": None  # Placeholder, will be instantiated dynamically
+                "Neural Network": "pytorch_custom" 
             }
 
             params = {
                 "Decision Tree Regressor": {
-                    'criterion': ['squared_error', 'friedman_mse', 'poisson']
+                    'criterion': ['squared_error', 'friedman_mse']
                 },
                 "Linear Regression": {
                     'fit_intercept': [True, False]
@@ -75,16 +79,16 @@ class ModelTrainer:
             }
 
             report = Evaluations.train_models(x_train, y_train, x_test, y_test, models, params, epochs=25)
-
+            logger.info(f"Model training report: {report}")
             # Getting the best model based on the report
             best_model_score = max(report, key=lambda model: report[model]["test_r2"])
             best_model = models[best_model_score]
-
+            logger.info(f"Best model: {best_model_score} with score: {report[best_model_score]['test_r2']}")
 
             # Getting Metrics based on the best model
             y_train_pred=best_model.predict(x_train)
             train_metrics = Evaluations.get_metrics(y_train, y_train_pred)
-
+            logger.info(f"Train metrics: {train_metrics}")
             # Tracking the best model
             self.track(best_model, train_metrics)
 
@@ -98,20 +102,20 @@ class ModelTrainer:
             val_metrics = Evaluations.get_metrics(y_val, y_val_pred)
             self.track(best_model, val_metrics)
 
-            preprocessor = load_model(self.data_transformation_Artifact.transformed_object_file_path)
+            preprocessor = load_model(Path(self.data_transformation_Artifact.transformed_object_file_path))
             model_dir_path = os.path.dirname(self.model_trainer_config.trained_model_file_path)
             os.makedirs(model_dir_path,exist_ok=True)
 
-            BiteScoreModel = BiteScoreModel(preprocessor, best_model)
-            save_model(BiteScoreModel, self.model_trainer_config.trained_model_file_path)
-            save_model(path = "final_model/model.pkl",data = best_model)
+            model_instance = BiteScoreModel(preprocessor, best_model)
+            save_model(model_instance, Path(self.model_trainer_config.trained_model_file_path))
+            save_model(path = Path("final_model/model.pkl"), data = best_model)
 
             # Creating the model trainer artifact
             model_trainer_artifact = ModelTrainerArtifact(
                 trained_model_file_path=self.model_trainer_config.trained_model_file_path,
-                train_metrics=train_metrics,
-                test_metrics=test_metrics,
-                val_metrics=val_metrics
+                train_metric_artifact=train_metrics,
+                test_metric_artifact=test_metrics,
+                val_metric_artifact=val_metrics
             )
             logger.info(f"Model trainer artifact: {model_trainer_artifact}")
             return model_trainer_artifact

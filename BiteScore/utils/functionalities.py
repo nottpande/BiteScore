@@ -142,4 +142,4 @@ def load_numpy_array_data(file_path: str) -> np.ndarray:
     return: np.array data loaded
     """
     with open(file_path, "rb") as file_obj:
-        return np.load(file_obj)
+        return np.load(file_obj, allow_pickle=True)
