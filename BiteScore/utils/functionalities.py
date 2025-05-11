@@ -12,7 +12,6 @@ from ensure import ensure_annotations
 from box import ConfigBox
 from pathlib import Path
 from box.exceptions import BoxValueError
-from typing import Any
 
 @ensure_annotations #this is to strictly follow the parameter type.
 def read_yaml(yaml_path : Path) -> ConfigBox:
@@ -82,7 +81,7 @@ def load_json(path: Path) -> ConfigBox:
     return ConfigBox(content)
 
 @ensure_annotations
-def save_model(data: Any, path: Path):
+def save_model(data, path: Path):
     """
     This function is used to save the models.
 
@@ -90,11 +89,13 @@ def save_model(data: Any, path: Path):
         data (Any): data to be saved as binary
         path (Path): path to model
     """
+    # Create the directory if it doesn't exist
+    path.parent.mkdir(parents=True, exist_ok=True)
     joblib.dump(value=data, filename=path)
     logger.info(f"Model saved at: {path}")
 
 @ensure_annotations
-def load_model(path: Path) -> Any:
+def load_model(path: Path):
     """
     This function is used to load our model
 
@@ -122,7 +123,7 @@ def write_yaml_file(file_path: str, content: dict, replace: bool = False):
         logger.info(f"Content writing completed")
 
 @ensure_annotations
-def save_numpy_array_data(file_path: str, array: np.array):
+def save_numpy_array_data(file_path: str, array: np.ndarray):
     """
     Save numpy array data to file
     file_path: str location of file to save
@@ -134,7 +135,7 @@ def save_numpy_array_data(file_path: str, array: np.array):
         np.save(file_obj, array)
 
 @ensure_annotations
-def load_numpy_array_data(file_path: str) -> np.array:
+def load_numpy_array_data(file_path: str) -> np.ndarray:
     """
     load numpy array data from file
     file_path: str location of file to load

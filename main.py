@@ -31,7 +31,7 @@ if __name__ == "__main__":
 
         logger.info("Initiating Model Trainer")
         model_trainer_config = ModelTrainerConfig(training_pipeline_config)
-        model_trainer = ModelTrainer(model_trainer_config=model_trainer_config, data_transformation_Artifact=data_ingestion_artifact)
+        model_trainer = ModelTrainer(model_trainer_config=model_trainer_config, data_transformation_Artifact=data_transformation_artifact)
         model_trainer_artifact = model_trainer.initiate_trainer()
         logger.info("Model Trainer task completed")
 

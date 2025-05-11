@@ -3,7 +3,7 @@ ARTIFACTS_DIR : Artifacts
 TARGET_COLUMN : Rating
 SCHEMA_PATH : schema.yaml
 
-file_locations : 
+file_locations: 
   Raw:
     input : Data/Raw/zomato.csv
     output : Data/Processed/zomato.csv

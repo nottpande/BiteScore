@@ -16,7 +16,8 @@ def label_mapping(label:str) -> int:
         'Yes' -> 1
         'No' -> 0
     '''
-    return label.map({'Yes':1, 'No':0})
+    mapping = {'Yes': 1, 'No': 0}
+    return mapping.get(label, -1)
 
 @ensure_annotations
 def extract_rating(rating:str) -> float:
@@ -46,27 +47,24 @@ def get_mappings(type:str) -> dict:
     '''
     This function returns the mapping required for mapping
     '''
-    params_file = os.path.join(os.getcwd(),"params.yaml")
-    print(params_file)
-    yaml_data = read_yaml(Path(params_file))
-
+    yaml_data = read_yaml(Path("config.yaml"))
     if type=="Resaurant Type":
         # load the restaurant type mapping
-        file_location = yaml_data['preprocess']['mapping']['restaurant_type']
+        file_location = yaml_data.file_locations.mapping.restaurant_type
         mapping = load_json(Path(file_location))
         logger.info("Loaded the Restaurant Type Mapping Successfully!")
         return mapping
     
     elif type=="Cuisine":
         # load the cuisine mapping
-        file_location = yaml_data['preprocess']['mapping']['cuisine']
+        file_location = yaml_data.file_locations.mapping.cuisine
         mapping = load_json(Path(file_location))
         logger.info("Loaded the Cuisine Mapping Successfully!")
         return mapping
 
     elif type=="Location":
         # load the location mapping
-        file_location = yaml_data['preprocess']['mapping']['location']
+        file_location = yaml_data.file_locations.mapping.location
         mapping = load_json(Path(file_location))
         logger.info("Loaded the Location Mapping Successfully!")
         return mapping
@@ -76,15 +74,18 @@ def get_mappings(type:str) -> dict:
         logger.error(f"{type} mapping does not exist.")
 
 @ensure_annotations
-def perform_mapping(entities_list:list, type:str) -> list: 
-    items = entities_list.split(', ')
-    mapped_items = []
+def perform_mapping(entities_list: str, type: str) -> list:
+    items = set(entities_list.split(', '))
+    mapped_items = set()
     mapping = get_mappings(type)
+    
     for key, values in mapping.items():
-        if any(item in items for item in values):
-            mapped_items.append(key)
+        if items.intersection(values):
+            mapped_items.add(key)
     logger.info(f"Completed mapping for {type} list given")
-    return ', '.join(mapped_items) if mapped_items else 'Miscellaneous'
+    print(f"The mapped items are: {list(mapped_items)}")
+    return list(mapped_items) if mapped_items else ["Miscellaneous"]  
+
 
 @ensure_annotations
 def encode_location(location:str) -> int:

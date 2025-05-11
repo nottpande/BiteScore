@@ -50,27 +50,38 @@ class DataTransformation:
         try:
             logger.info("Reading the data")
             # Read the data
-            train_data = self.read_data(self.data_validation_artifact.train_data_path)
-            test_data = self.read_data(self.data_validation_artifact.test_data_path)
-            val_data = self.read_data(self.data_validation_artifact.val_data_path)
+            train_data = self.read_data(self.data_validation_artifact.valid_train_file_path)
+            test_data = self.read_data(self.data_validation_artifact.valid_val_file_path)
+            val_data = self.read_data(self.data_validation_artifact.valid_test_file_path)
 
             # Training Dataframe
-            train_data.drop(subset=['name','address'], axis=0, inplace=True)
+            train_data.drop(['name', 'address'], axis=1, inplace=True) 
             input_feature_train_df = train_data.drop(columns=[CONFIG.TARGET_COLUMN], axis=1)
             target_feature_train_df = train_data[CONFIG.TARGET_COLUMN]
 
             # Testing Dataframe
-            test_data.dropna(subset=['name','address'], axis=0, inplace=True)
+            test_data.drop(['name', 'address'], axis=1, inplace=True) 
             input_feature_test_df = test_data.drop(columns=[CONFIG.TARGET_COLUMN], axis=1)
             target_feature_test_df = test_data[CONFIG.TARGET_COLUMN]
 
             # Validation Dataframe
-            val_data.dropna(subset=['name','address'], axis=0, inplace=True)
+            val_data.drop(['name', 'address'], axis=1, inplace=True) 
             input_feature_val_df = val_data.drop(columns=[CONFIG.TARGET_COLUMN], axis=1)
             target_feature_val_df = val_data[CONFIG.TARGET_COLUMN]
 
             # Build the transformer object
             transformer = self.build_transformer_object(train_data)
+
+            # For testing purposes
+            # Take only the first 10 rows for testing
+            input_feature_train_df = input_feature_train_df.head(10)
+            target_feature_train_df = target_feature_train_df.head(10)
+
+            input_feature_test_df = input_feature_test_df.head(10)
+            target_feature_test_df = target_feature_test_df.head(10)
+
+            input_feature_val_df = input_feature_val_df.head(10)
+            target_feature_val_df = target_feature_val_df.head(10)
 
             # Transform the data
             logger.info("Transforming the data")
@@ -91,8 +102,8 @@ class DataTransformation:
             save_numpy_array_data(self.data_transformation_config.transformed_val_file_path, array=val_arr)
 
             # Save the transformer model
-            save_model(path=self.data_transformation_config.transformed_object_file_path, data=transformer)
-            save_model(path="final_model/preprocessor.pkl", data=transformer)
+            save_model(path=Path(self.data_transformation_config.transformed_object_file_path), data=transformer)
+            save_model(path=Path("final_model/preprocessor.pkl"), data=transformer)
 
             logger.info("Data transformation completed successfully")
 
@@ -104,6 +115,6 @@ class DataTransformation:
                 transformed_test_file_path=self.data_transformation_config.transformed_test_file_path
             )
             return data_transformation_artifact
-        except Exception as e:
+        except Exception as e:  
             logger.error("Error during data transformation")
             raise BiteScoreException(e, sys)

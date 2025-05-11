@@ -5,7 +5,7 @@ from datetime import datetime
 
 
 logging_format = "[%(asctime)s] - %(lineno)d %(name)s - %(levelname)s - %(module)s: - %(message)s"
-log_dir = os.path.join(os.getcwd(),"BiteScore/Logging/Logs")
+log_dir = os.path.join(os.getcwd(),"Artifacts/Logs")
 os.makedirs(log_dir,exist_ok=True)
 LOG_FILE = f"{datetime.now().strftime('%m_%d_%Y_%H_%M_%S')}.log"
 log_filepath = os.path.join(log_dir,LOG_FILE)

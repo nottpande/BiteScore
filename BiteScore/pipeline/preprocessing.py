@@ -1,5 +1,5 @@
 import sys
-import logging
+import ast
 from transformers import pipeline
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import Pipeline
@@ -35,7 +35,7 @@ class CustomEncoderTransformer(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         X_copy = X.copy()
-        X_copy[self.column_to_encode] = X_copy[self.column_to_encode].apply(encode_location())
+        X_copy[self.column_to_encode] = X_copy[self.column_to_encode].apply(lambda x : encode_location(x))
         
         return X_copy
 class GroupingTransformer(BaseEstimator, TransformerMixin):
@@ -83,7 +83,7 @@ class ReviewScoringTransformer(BaseEstimator, TransformerMixin):
 
     def transform(self, X):
         X_copy = X.copy()
-        X_copy['reviews_score'] = X_copy['reviews'].apply(lambda x: score_reviews(x, self.sentiment_scoring_model))
+        X_copy['reviews_score'] = X_copy['reviews'].apply(lambda x: score_reviews(ast.literal_eval(x), self.sentiment_scoring_model))
         return X_copy
 
 # Main Preprocessing Pipeline Class
@@ -116,14 +116,18 @@ class PreprocessingPipeline:
 
             # Perform Mapping for the 'cuisines' and 'rest_type' columns
             # Create the transformers for each column with its corresponding mapping type
-            rest_type_transformer = GroupingTransformer(column='rest_type', mapping_type='Restaurant Type')
-            cuisines_transformer = GroupingTransformer(column='cuisines', mapping_type='Cuisine')
-
-            # Apply multi-label binarization for 'cuisines' and 'rest_type'
-            binarizer_cuisines = MultiLabelBinarizerTransformer(column_name='cuisines', binarizer=self.multi_label_binarizer_cuisines)
+            logger.info(f"Mapping the restaurant type")
+            rest_type_transformer = GroupingTransformer(column='rest_type', mapping_type='Resaurant Type')
+            logger.info(f"Performing Multi Label Binarization for restaurant")
             binarizer_rest_type = MultiLabelBinarizerTransformer(column_name='rest_type', binarizer=self.multi_label_binarizer_rest_types)
 
+            logger.info(f"Mapping the cuisines")
+            cuisines_transformer = GroupingTransformer(column='cuisines', mapping_type='Cuisine')
+            logger.info(f"Performing Multi Label Binarization for cuisines")
+            binarizer_cuisines = MultiLabelBinarizerTransformer(column_name='cuisines', binarizer=self.multi_label_binarizer_cuisines)
+
             # Review scoring step
+            logger.info(f"Scoring the reviews")
             review_scoring = ReviewScoringTransformer(self.sentiment_scoring_model)
 
             # Create the preprocessing pipeline
